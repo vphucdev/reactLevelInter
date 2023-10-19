@@ -8,7 +8,7 @@ function TableUsers() {
     const getUsers = async () => {
       const res = await fetUsers();
 
-      setlistUsers(res.data.data);
+      setlistUsers(res.data);
     };
     getUsers();
   }, []);
