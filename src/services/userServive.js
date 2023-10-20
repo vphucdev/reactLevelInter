@@ -1,7 +1,7 @@
-import httpRequest from "./httpRequest"
+import httpRequest from "./httpRequest";
 
-export const fetUsers = () => {
-    const res = httpRequest.get('/users?page=1')
-    
-    return res
-}
+export const fetUsers = (page) => {
+  const res = httpRequest.get("/users", { params: { page } });
+
+  return res;
+};
