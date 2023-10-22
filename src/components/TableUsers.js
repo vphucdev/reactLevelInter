@@ -1,13 +1,19 @@
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import Table from "react-bootstrap/Table";
 
 import { fetUsers } from "../services/userServive";
 import ReactPaginate from "react-paginate";
+import ModalAddNew from "./ModalAddNew";
 
-function TableUsers() {
+function TableUsers(props, ref) {
+  const [isShowModalAddNew, setisShowModalAddNew] = useState(false);
+
   const [listUsers, setlistUsers] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+
+  useImperativeHandle(ref, () => ({ setisShowModalAddNew }))
+  
   useEffect(() => {
     const getUsers = async () => {
       const res = await fetUsers(currentPage);
@@ -18,10 +24,14 @@ function TableUsers() {
     getUsers();
   }, [currentPage]);
 
+
   const handlePageClick = ({ selected }) => {
-    console.log(typeof(selected))
     setCurrentPage(selected + 1);
   };
+
+  const handlUpdateTable = (user) => { 
+    setlistUsers([user, ...listUsers]);
+  }
   return (
     <>
       <Table striped bordered hover variant="light">
@@ -65,8 +75,13 @@ function TableUsers() {
         activeClassName="active"
         renderOnZeroPageCount={null}
       />
+      <ModalAddNew
+        show={isShowModalAddNew}
+        handleClose={() => setisShowModalAddNew(false)}
+        handlUpdateTable={handlUpdateTable}
+      />
     </>
   );
 }
 
-export default TableUsers;
+export default forwardRef(TableUsers);
