@@ -5,3 +5,7 @@ export const fetUsers = (page) => {
 
   return res;
 };
+
+export const postCreateUser = (name, job) => {
+  return httpRequest.post("/users", {name, job})
+}
