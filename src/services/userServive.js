@@ -9,3 +9,7 @@ export const fetUsers = (page) => {
 export const postCreateUser = (name, job) => {
   return httpRequest.post("/users", {name, job})
 }
+
+export const putUpdateUser = (name, job) => { 
+  return httpRequest.post("/users", {name, job})
+}
