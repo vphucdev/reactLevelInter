@@ -59,7 +59,7 @@ const ModalAddNew = ({
 
   return (
     <div>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} backdrop="static" onHide={handleClose}>
         <Modal.Header closeButton>
           {action === "add" ? (
             <Modal.Title>Add new user</Modal.Title>
