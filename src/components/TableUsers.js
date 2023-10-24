@@ -7,40 +7,61 @@ import ModalAddNew from "./ModalAddNew";
 
 function TableUsers(props, ref) {
   const [isShowModalAddNew, setisShowModalAddNew] = useState(false);
+  const [modalAction, setModalAction] = useState("");
+  const [userEdit, setUserEdit] = useState({});
 
   const [listUsers, setlistUsers] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  useImperativeHandle(ref, () => ({ setisShowModalAddNew }))
-  
+  useImperativeHandle(ref, () => ({ handlClickAddUser }));
+
   useEffect(() => {
     const getUsers = async () => {
       const res = await fetUsers(currentPage);
-      console.log(res);
+      
       setTotalPages(res.total_pages);
       setlistUsers(res.data);
     };
     getUsers();
   }, [currentPage]);
 
-
   const handlePageClick = ({ selected }) => {
     setCurrentPage(selected + 1);
   };
 
-  const handlUpdateTable = (user) => { 
+  const handlUpdateTable = (user) => {
     setlistUsers([user, ...listUsers]);
-  }
+  };
+  const handlClickAddUser = () => {
+    
+    setisShowModalAddNew(true);
+    setModalAction("add");
+  };
+  const handlClickEditUser = (item) => {
+    setisShowModalAddNew(true);
+    setModalAction("edit");
+    setUserEdit(item);
+  };
+  const handlUpdateFromModal = (item) => {
+    let newListUsers = [...listUsers]
+    let user = newListUsers.find(user => {
+      return user.id === item.id
+    })
+    user.first_name = item.first_name
+    setlistUsers(newListUsers)
+  };
   return (
     <>
       <Table striped bordered hover variant="light">
         <thead>
           <tr>
             <th>ID</th>
+            <th>Avatar</th>
             <th>Email</th>
             <th>First Name</th>
             <th>Last Name</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -48,9 +69,32 @@ function TableUsers(props, ref) {
             listUsers.map((item) => (
               <tr key={item.id}>
                 <td>{item.id}</td>
-                <td>{item.email}</td>
-                <td>{item.first_name}</td>
+                <td>
+                  {
+                    <img
+                      src={item.avatar}
+                      alt=""
+                      className="avatar mx-auto d-block"
+                    />
+                  }
+                </td>
+                <td className="text-center">{item.email}</td>
+                <td className="text-center">{item.first_name}</td>
                 <td>{item.last_name}</td>
+                <td>
+                  <div>
+                    <button
+                      type="button"
+                      className="btn btn-warning mx-3"
+                      onClick={() => handlClickEditUser(item)}
+                    >
+                      Edit
+                    </button>
+                    <button type="button" className="btn btn-danger">
+                      Danger
+                    </button>
+                  </div>
+                </td>
               </tr>
             ))}
         </tbody>
@@ -79,6 +123,9 @@ function TableUsers(props, ref) {
         show={isShowModalAddNew}
         handleClose={() => setisShowModalAddNew(false)}
         handlUpdateTable={handlUpdateTable}
+        action={modalAction}
+        userEdit={userEdit}
+        handlUpdateFromModal={handlUpdateFromModal}
       />
     </>
   );
