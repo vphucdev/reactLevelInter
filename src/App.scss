@@ -4,11 +4,11 @@
   box-sizing: border-box;
 }
 
-// .center {
-//   display: flex;
-//   justify-content: center;
-// }
 .pagination {
   justify-content: center;
+}
 
+.avatar {
+  border-radius: 50%;
+  width: 50px;
 }
