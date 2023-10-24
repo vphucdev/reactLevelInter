@@ -15,7 +15,7 @@ function App() {
       <Container>
         <div className="my-3 d-flex justify-content-between align-items-center">
           <span>List Users: </span>
-          <Button variant="success" onClick={() => ref.current.setisShowModalAddNew(true)}>
+          <Button variant="success" onClick={() => ref.current.handlClickAddUser()}>
             Add New User
           </Button>
         </div>
