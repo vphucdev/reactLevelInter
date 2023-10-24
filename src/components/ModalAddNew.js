@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { postCreateUser, putUpdateUser } from "../services/userServive";
 import { toast } from "react-toastify";
+import ReactLoading from "react-loading";
 
 const ModalAddNew = ({
   show,
@@ -13,12 +14,16 @@ const ModalAddNew = ({
 }) => {
   const [name, setName] = useState("");
   const [job, setJob] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const inputRef = useRef();
 
   const handleSaveUser = async () => {
     try {
+      setIsLoading(true);
       const res = await postCreateUser(name, job);
+      setIsLoading(false);
+
       handleClose();
 
       toast.success("Add user successed");
@@ -33,8 +38,11 @@ const ModalAddNew = ({
   };
   const handlEdit = async () => {
     try {
-      handleClose();
+      setIsLoading(true);
       const res = await putUpdateUser(name, job);
+      setIsLoading(false);
+
+      handleClose();
 
       if (res && res.createdAt) {
         toast.success("update successed");
@@ -106,11 +114,31 @@ const ModalAddNew = ({
           </Button>
           {action === "add" ? (
             <Button variant="primary" onClick={handleSaveUser}>
-              Save Changes
+              <span className="d-flex gap-2">
+                Save Changes
+                {isLoading && (
+                  <ReactLoading
+                    type="spin"
+                    color="#fff"
+                    height={20}
+                    width={20}
+                  />
+                )}
+              </span>
             </Button>
           ) : (
             <Button variant="primary" onClick={handlEdit}>
-              Confirm
+              <span className="d-flex gap-2">
+                Confirm
+                {isLoading && (
+                  <ReactLoading
+                    type="spin"
+                    color="#fff"
+                    height={20}
+                    width={20}
+                  />
+                )}
+              </span>
             </Button>
           )}
         </Modal.Footer>
