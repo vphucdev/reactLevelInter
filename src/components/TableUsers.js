@@ -43,6 +43,13 @@ function TableUsers(props, ref) {
     setModalAction("edit");
     setUserEdit(item);
   };
+
+  const handlClickDeleteUser = (item) => {
+    setisShowModalAddNew(true);
+    setModalAction("del");
+    setUserEdit(item);
+  };
+
   const handlUpdateFromModal = (item) => {
     let newListUsers = [...listUsers]
     let user = newListUsers.find(user => {
@@ -51,6 +58,12 @@ function TableUsers(props, ref) {
     user.first_name = item.first_name
     setlistUsers(newListUsers)
   };
+  const handlUpdateWhenDelete = (user,index) => {
+    let newListUsers = listUsers.filter(item => item.id !== user.id)
+    setlistUsers(newListUsers)
+    
+
+  }
   return (
     <>
       <Table striped bordered hover variant="light">
@@ -90,8 +103,8 @@ function TableUsers(props, ref) {
                     >
                       Edit
                     </button>
-                    <button type="button" className="btn btn-danger">
-                      Danger
+                    <button type="button" className="btn btn-danger" onClick={() => handlClickDeleteUser(item)}>
+                      Delete
                     </button>
                   </div>
                 </td>
@@ -126,6 +139,7 @@ function TableUsers(props, ref) {
         action={modalAction}
         userEdit={userEdit}
         handlUpdateFromModal={handlUpdateFromModal}
+        handlUpdateWhenDelete={handlUpdateWhenDelete}
       />
     </>
   );
