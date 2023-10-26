@@ -13,3 +13,6 @@ export const postCreateUser = (name, job) => {
 export const putUpdateUser = (name, job) => { 
   return httpRequest.post("/users", {name, job})
 }
+export const deleteUser = (id) => {
+   return httpRequest.delete(`/users/${id}`)
+ }
