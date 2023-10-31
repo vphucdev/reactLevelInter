@@ -4,7 +4,12 @@ import Table from "react-bootstrap/Table";
 import { fetUsers } from "../services/userServive";
 import ReactPaginate from "react-paginate";
 import ModalAddNew from "./ModalAddNew";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowDownLong,
+  faArrowUpLong,
+} from "@fortawesome/free-solid-svg-icons";
+import "./TableUsers.scss";
 function TableUsers(props, ref) {
   const [isShowModalAddNew, setisShowModalAddNew] = useState(false);
   const [modalAction, setModalAction] = useState("");
@@ -51,28 +56,46 @@ function TableUsers(props, ref) {
   };
 
   const handlUpdateFromModal = (item) => {
-    let newListUsers = [...listUsers]
-    let user = newListUsers.find(user => {
-      return user.id === item.id
-    })
-    user.first_name = item.first_name
-    setlistUsers(newListUsers)
+    let newListUsers = [...listUsers];
+    let user = newListUsers.find((user) => {
+      return user.id === item.id;
+    });
+    user.first_name = item.first_name;
+    setlistUsers(newListUsers);
   };
-  const handlUpdateWhenDelete = (user,index) => {
-    let newListUsers = listUsers.filter(item => item.id !== user.id)
-    setlistUsers(newListUsers)
-    
-
-  }
+  const handlUpdateWhenDelete = (user, index) => {
+    let newListUsers = listUsers.filter((item) => item.id !== user.id);
+    setlistUsers(newListUsers);
+  };
   return (
     <>
       <Table striped bordered hover variant="light">
         <thead>
-          <tr>
-            <th>ID</th>
+          <tr className="text-center">
+            <th className="d-flex justify-content-between btn-sort">
+              <span>ID</span>
+              <span>
+                <button type="button" className="btn ">
+                  <FontAwesomeIcon icon={faArrowDownLong} />
+                </button>
+                <button type="button" className="btn ">
+                  <FontAwesomeIcon icon={faArrowUpLong} />
+                </button>
+              </span>
+            </th>
             <th>Avatar</th>
             <th>Email</th>
-            <th>First Name</th>
+            <th className="d-flex justify-content-between btn-sort">
+              <span>First Name</span>
+              <span>
+                <button type="button" className="btn ">
+                  <FontAwesomeIcon icon={faArrowDownLong} />
+                </button>
+                <button type="button" className="btn ">
+                  <FontAwesomeIcon icon={faArrowUpLong} />
+                </button>
+              </span>
+            </th>
             <th>Last Name</th>
             <th>Actions</th>
           </tr>
@@ -103,7 +126,11 @@ function TableUsers(props, ref) {
                     >
                       Edit
                     </button>
-                    <button type="button" className="btn btn-danger" onClick={() => handlClickDeleteUser(item)}>
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={() => handlClickDeleteUser(item)}
+                    >
                       Delete
                     </button>
                   </div>

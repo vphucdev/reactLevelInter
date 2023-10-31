@@ -1,0 +1,13 @@
+.btn-sort {
+  .btn {
+    padding: 0 2px;
+    opacity: 0.7;
+
+    &:active {
+      border-color: transparent !important;
+    }
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
