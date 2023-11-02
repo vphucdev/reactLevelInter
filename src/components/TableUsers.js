@@ -10,6 +10,7 @@ import {
   faArrowUpLong,
 } from "@fortawesome/free-solid-svg-icons";
 import "./TableUsers.scss";
+import _ from "lodash";
 function TableUsers(props, ref) {
   const [isShowModalAddNew, setisShowModalAddNew] = useState(false);
   const [modalAction, setModalAction] = useState("");
@@ -39,7 +40,6 @@ function TableUsers(props, ref) {
     setlistUsers([user, ...listUsers]);
   };
   const handlClickAddUser = () => {
-    
     setisShowModalAddNew(true);
     setModalAction("add");
   };
@@ -67,6 +67,12 @@ function TableUsers(props, ref) {
     let newListUsers = listUsers.filter((item) => item.id !== user.id);
     setlistUsers(newListUsers);
   };
+
+  const handleSort = (sortBy, sortField) => {
+    let listUsersSorted = _.cloneDeep(listUsers);
+    listUsersSorted = _.orderBy(listUsersSorted, [sortField], [sortBy]);
+    setlistUsers(listUsersSorted);
+  };
   return (
     <>
       <Table striped bordered hover variant="light">
@@ -75,10 +81,18 @@ function TableUsers(props, ref) {
             <th className="d-flex justify-content-between btn-sort">
               <span>ID</span>
               <span>
-                <button type="button" className="btn ">
+                <button
+                  type="button"
+                  className="btn "
+                  onClick={() => handleSort("desc", "id")}
+                >
                   <FontAwesomeIcon icon={faArrowDownLong} />
                 </button>
-                <button type="button" className="btn ">
+                <button
+                  type="button"
+                  className="btn "
+                  onClick={() => handleSort("asc", "id")}
+                >
                   <FontAwesomeIcon icon={faArrowUpLong} />
                 </button>
               </span>
@@ -88,10 +102,18 @@ function TableUsers(props, ref) {
             <th className="d-flex justify-content-between btn-sort">
               <span>First Name</span>
               <span>
-                <button type="button" className="btn ">
+                <button
+                  type="button"
+                  className="btn "
+                  onClick={() => handleSort("desc", "first_name")}
+                >
                   <FontAwesomeIcon icon={faArrowDownLong} />
                 </button>
-                <button type="button" className="btn ">
+                <button
+                  type="button"
+                  className="btn "
+                  onClick={() => handleSort("asc", "first_name")}
+                >
                   <FontAwesomeIcon icon={faArrowUpLong} />
                 </button>
               </span>
