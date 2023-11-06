@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import Table from "react-bootstrap/Table";
 
+import Debounce from "./useDebounce";
 import { fetUsers } from "../services/userServive";
 import ReactPaginate from "react-paginate";
 import ModalAddNew from "./ModalAddNew";
@@ -17,17 +18,19 @@ function TableUsers(props, ref) {
   const [userEdit, setUserEdit] = useState({});
 
   const [listUsers, setlistUsers] = useState([]);
+  const [listUsersRoot, setlistUsersRoot] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchValue, setSearchValue] = useState("");
 
   useImperativeHandle(ref, () => ({ handlClickAddUser }));
 
   useEffect(() => {
     const getUsers = async () => {
       const res = await fetUsers(currentPage);
-      
       setTotalPages(res.total_pages);
       setlistUsers(res.data);
+      setlistUsersRoot(res.data);
     };
     getUsers();
   }, [currentPage]);
@@ -73,11 +76,32 @@ function TableUsers(props, ref) {
     listUsersSorted = _.orderBy(listUsersSorted, [sortField], [sortBy]);
     setlistUsers(listUsersSorted);
   };
+
+  const debouncedValue = Debounce(searchValue, 300);
+
+  useEffect(() => {
+    let newListUsers = _.cloneDeep(listUsersRoot);
+    newListUsers = newListUsers.filter((item) =>
+      item.email.includes(searchValue)
+    );
+    setlistUsers(newListUsers);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedValue]);
+
   return (
     <>
-      <Table striped bordered hover variant="light">
+      <div className="col-4 my-3">
+        <input
+          className="form-control"
+          placeholder="Enter email"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+        />
+      </div>
+      <Table striped bordered hover variant="light" className="text-center">
         <thead>
-          <tr className="text-center">
+          <tr>
             <th className="d-flex justify-content-between btn-sort">
               <span>ID</span>
               <span>
@@ -136,8 +160,8 @@ function TableUsers(props, ref) {
                     />
                   }
                 </td>
-                <td className="text-center">{item.email}</td>
-                <td className="text-center">{item.first_name}</td>
+                <td>{item.email}</td>
+                <td>{item.first_name}</td>
                 <td>{item.last_name}</td>
                 <td>
                   <div>
