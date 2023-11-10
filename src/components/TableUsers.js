@@ -12,6 +12,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./TableUsers.scss";
 import _, { debounce } from "lodash";
+import { ClearIcon } from "./Icons";
+
 function TableUsers(props, ref) {
   const [isShowModalAddNew, setisShowModalAddNew] = useState(false);
   const [modalAction, setModalAction] = useState("");
@@ -77,35 +79,44 @@ function TableUsers(props, ref) {
     setlistUsers(listUsersSorted);
   };
 
-  // const debouncedValue = Debounce(searchValue, 300);
+  const debouncedValue = Debounce(searchValue, 300);
 
-  // useEffect(() => {
+  useEffect(() => {
+    let newListUsers = _.cloneDeep(listUsersRoot);
+    newListUsers = newListUsers.filter((item) =>
+      item.email.includes(searchValue)
+    );
+    setlistUsers(newListUsers);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedValue]);
+
+  // const handleFilter = debounce((searchValue) => {
+  //   // dùng hàm này thì phải xóa dòng này ở thẻ input: "value={searchValue}"
   //   let newListUsers = _.cloneDeep(listUsersRoot);
   //   newListUsers = newListUsers.filter((item) =>
   //     item.email.includes(searchValue)
   //   );
   //   setlistUsers(newListUsers);
+  // }, 300);
 
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [debouncedValue]);
-
-  const handleFilter = debounce((searchValue) => {
-    // setSearchValue(searchValue)
-      let newListUsers = _.cloneDeep(listUsersRoot);
-      newListUsers = newListUsers.filter((item) =>
-        item.email.includes(searchValue)
-      );
-      setlistUsers(newListUsers);
-  }, 300)
+  const handleClickClearBtn = () => {
+    setSearchValue("");
+  };
   return (
     <>
-      <div className="col-4 my-3">
+      <div className="search col-4 my-3">
         <input
           className="form-control"
           placeholder="Enter email"
-          // value={searchValue}
-          onChange={(e) => handleFilter(e.target.value)}
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
         />
+
+        <button className="clear-btn" onClick={handleClickClearBtn}>
+          <ClearIcon className="clear-icon" width="1.4rem" height="1.4rem" />
+        </button>
+
       </div>
       <Table striped bordered hover variant="light" className="text-center">
         <thead>
