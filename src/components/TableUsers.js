@@ -9,10 +9,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowDownLong,
   faArrowUpLong,
+  faFileArrowDown,
+  faFileImport,
+  faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import "./TableUsers.scss";
 import _, { debounce } from "lodash";
 import { ClearIcon } from "./Icons";
+import { CSVLink } from "react-csv";
+import { Button } from "react-bootstrap";
+import { toast } from "react-toastify";
+import Papa from "papaparse";
 
 function TableUsers(props, ref) {
   const [isShowModalAddNew, setisShowModalAddNew] = useState(false);
@@ -25,7 +32,7 @@ function TableUsers(props, ref) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchValue, setSearchValue] = useState("");
 
-  useImperativeHandle(ref, () => ({ handlClickAddUser }));
+  // useImperativeHandle(ref, () => ({ handlClickAddUser, listUsers }));
 
   useEffect(() => {
     const getUsers = async () => {
@@ -103,8 +110,73 @@ function TableUsers(props, ref) {
   const handleClickClearBtn = () => {
     setSearchValue("");
   };
+
+  const headers = [
+    { label: "ID", key: "id" },
+    { label: "First Name", key: "first_name" },
+    { label: "Last Name", key: "last_name" },
+    { label: "Email", key: "email" },
+  ];
+
+  const csvData = listUsers;
+
+  const handlImportCSV = (e) => {
+    const file = e.target.files[0];
+    if (file.type !== "text/csv") {
+      toast.error("Only accept csv files");
+      return;
+    }
+
+    Papa.parse(file, {
+      header: true,
+      complete: function (results) {
+        console.log(results.data.length);
+        results.data.pop();
+        if (results.data.length === 0) {
+          console.log("error");
+          toast.error("Not found data on CSV file");
+          return;
+        }
+        const result = results.data.map((result) => {
+          return {
+            first_name: result["First Name"],
+            last_name: result["Last Name"],
+            email: result["Email"],
+          };
+        });
+        console.log(result);
+        setlistUsers(result);
+      },
+    });
+  };
   return (
     <>
+      <div className="my-3 d-flex justify-content-between align-items-center">
+        <span>List Users: </span>
+        <div className="d-flex gap-2">
+          <label htmlFor="import-csv" className="btn btn-danger">
+            <FontAwesomeIcon className="me-2" icon={faFileImport} />
+            Import CSV
+          </label>
+          <input id="import-csv" type="file" hidden onChange={handlImportCSV} />
+          <CSVLink
+            separator={"  "}
+            enclosingCharacter={``}
+            data={csvData}
+            headers={headers}
+            filename={"user.csv"}
+            className="btn btn-primary"
+          >
+            <FontAwesomeIcon className="me-2" icon={faFileArrowDown} />
+            Export CSV
+          </CSVLink>
+
+          <Button variant="success" onClick={handlClickAddUser}>
+            <FontAwesomeIcon className="me-2" icon={faPlusCircle} />
+            Add New User
+          </Button>
+        </div>
+      </div>
       <div className="search col-4 my-3">
         <input
           className="form-control"
@@ -116,7 +188,6 @@ function TableUsers(props, ref) {
         <button className="clear-btn" onClick={handleClickClearBtn}>
           <ClearIcon className="clear-icon" width="1.4rem" height="1.4rem" />
         </button>
-
       </div>
       <Table striped bordered hover variant="light" className="text-center">
         <thead>
@@ -167,8 +238,8 @@ function TableUsers(props, ref) {
         </thead>
         <tbody>
           {listUsers &&
-            listUsers.map((item) => (
-              <tr key={item.id}>
+            listUsers.map((item, index) => (
+              <tr key={index}>
                 <td>{item.id}</td>
                 <td>
                   {
