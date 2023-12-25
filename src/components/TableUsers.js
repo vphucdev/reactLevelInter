@@ -27,7 +27,8 @@ function TableUsers(props, ref) {
   const [userEdit, setUserEdit] = useState({});
 
   const [listUsers, setlistUsers] = useState([]);
-  const [listUsersRoot, setlistUsersRoot] = useState([]);
+  const [listUsersRoot, setlistUsersRoot] = useState([]);// phải dùng thêm listUsersRoot vì khi dùng chức năng filter
+                                                        // sau khi filter xóa từng kí tự của searchValue thì sẽ bị lỗi
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchValue, setSearchValue] = useState("");
@@ -89,6 +90,7 @@ function TableUsers(props, ref) {
   const debouncedValue = Debounce(searchValue, 300);
 
   useEffect(() => {
+    //let newListUsers = _.cloneDeep(listUsers) // dùng listUsers sẽ bị lỗi khi xóa từng kí tự của searchValue, phải dùng listUsersRoot
     let newListUsers = _.cloneDeep(listUsersRoot);
     newListUsers = newListUsers.filter((item) =>
       item.email.includes(searchValue)
