@@ -1,0 +1,28 @@
+.navbar {
+  .navbar-nav .nav-link.active {
+    font-weight: 500;
+  }
+
+  .navbar-nav {
+    &:hover .icon-setting {
+        // animation: spin 0.5s ease-in-out;
+        opacity: 1;
+    }
+  }
+
+  .icon-setting {
+    opacity: 0.8;
+  }
+
+  .icon-login, .icon-logout {
+    opacity: 0.8;
+  }
+}
+// @keyframes spin {
+//   from {
+//     transform: rotate(0);
+//   }
+//   to {
+//     transform: rotate(360deg);
+//   }
+// }
