@@ -14,3 +14,12 @@
   height: 50px;
   object-fit: cover;
 }
+
+@keyframes spin {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(30deg);
+  }
+}
